@@ -1,6 +1,6 @@
 import logger from "@loaders/logger";
 
-// import {db} from "@db/index";
+import {db} from "@db/index";
 
 import serviceUtil from "@util/serviceUtil";
 
@@ -14,26 +14,33 @@ export default class AnnotationService {
 	public async getAnnotationOptions(
 		uniqueRequestId: NullableString
 	): Promise<iGenericServiceResult<MultiAnnotation | null>> {
-		// return db.task("get-annotation-options", async (task) => {
-		logger.silly("Retrieving the annotations");
-		// const annotationRecords = await task.annotations.all();
+		return db.task("get-annotation-options", async (task) => {
+			logger.silly("Retrieving the annotations");
 
-		const multiAnnotations: MultiAnnotation = {
-			ids: [],
+			const annotationRecords = await task.annotations.all();
 
-			items: {},
-		};
+			const normalizedMultiAnnotations: MultiAnnotation = {
+				ids: [],
 
-		// if (annotationRecords) {
-		// }
+				items: {},
+			};
 
-		return serviceUtil.buildResult(
-			true,
-			httpStatusCodes.SUCCESS_OK,
-			uniqueRequestId,
-			null,
-			multiAnnotations
-		);
-		// });
+			if (annotationRecords && annotationRecords.length > 0) {
+				annotationRecords.forEach((annotationRecord) => {
+					const {id, name} = annotationRecord;
+
+					normalizedMultiAnnotations.ids.push(id);
+					normalizedMultiAnnotations.items[id] = {id, name};
+				});
+			}
+
+			return serviceUtil.buildResult(
+				true,
+				httpStatusCodes.SUCCESS_OK,
+				uniqueRequestId,
+				null,
+				normalizedMultiAnnotations
+			);
+		});
 	}
 }

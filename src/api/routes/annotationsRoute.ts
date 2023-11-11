@@ -58,6 +58,7 @@ const annotationsRoute: RouteType = (apiRouter) => {
 
 				return res.status(httpStatusCode).json(result);
 			} catch (error) {
+				console.log("🚀 ~ file: annotationsRoute.ts:61 ~ error:", error);
 				logger.error(uniqueRequestId, "Error on GET:/annotations:", error);
 
 				return next(error);
