@@ -77,3 +77,7 @@ export const emailVerificationRequestLogs = {
 	create: sql("emailVerificationRequestLogs/create.sql"),
 	add: sql("emailVerificationRequestLogs/add.sql"),
 };
+
+export const annotations = {
+	create: sql("annotations/create.sql"),
+};
