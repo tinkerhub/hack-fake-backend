@@ -1,13 +1,14 @@
 import {IDatabase, IMain} from "pg-promise";
 
-import {iNewsModel} from "db/models/news.model";
+import {iNewsAnnotationMapModel} from "db/models/newsAnnotationMap.model";
 
-import {news as sql} from "@db/sql";
+import {newsAnnotationMap as sql} from "@db/sql";
+import {NullableString} from "customTypes/commonTypes";
 
 /*
  This repository mixes hard-coded and dynamic SQL, just to show how to use both.
 */
-export default class NewsRepository {
+export default class NewsAnnotationRepository {
 	/**
 	 * @param db
 	 * Automated database connection context/interface.
@@ -29,7 +30,7 @@ export default class NewsRepository {
 	}
 
 	/**
-	 * Creates the annotations table.
+	 * Creates the news_annotation_map table.
 	 *
 	 * @returns null
 	 */
@@ -37,30 +38,33 @@ export default class NewsRepository {
 		return this.db.none(sql.create);
 	}
 
-	// Returns all annotations records;
-	async all(): Promise<iNewsModel[]> {
-		return this.db.any("SELECT * FROM news");
+	// Returns all news_annotation_map records;
+	async all(): Promise<iNewsAnnotationMapModel[]> {
+		return this.db.any("SELECT * FROM news_annotation_map");
 	}
 
-	// Finds a news record by its ID;
-	async findById(id: string): Promise<iNewsModel | null> {
-		return this.db.oneOrNone("SELECT * FROM news WHERE id = $1", id);
+	// Finds a news_annotation_map record by its ID;
+	async findById(id: string): Promise<iNewsAnnotationMapModel | null> {
+		return this.db.oneOrNone(
+			"SELECT * FROM news_annotation_map WHERE id = $1",
+			id
+		);
 	}
 
-	// Adds a new news record, and returns the new object;
+	// Adds a new news_annotation_map record, and returns the new object;
 	async add(
 		id: string,
-		publishedDate: string,
-		url: string,
-		title: string,
-		content: string
-	): Promise<iNewsModel> {
+		newsId: string,
+		annotationId: string,
+		annotatedBy: string,
+		userId: NullableString
+	): Promise<iNewsAnnotationMapModel> {
 		return this.db.one(sql.add, {
 			id,
-			publishedDate,
-			url,
-			title,
-			content,
+			newsId,
+			annotationId,
+			annotatedBy,
+			userId,
 		});
 	}
 }

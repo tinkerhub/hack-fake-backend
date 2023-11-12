@@ -6,6 +6,7 @@ import ResetPasswordRepository from "./ResetPasswordRepository";
 import EmailVerificationRequestLogsRepository from "./EmailVerificationRequestLogsRepository";
 import AnnotationsRepository from "./AnnotationsRepository";
 import NewsRepository from "./NewsRepository";
+import NewsAnnotationRepository from "./NewsAnnotationRepository";
 
 /**
  * Database Interface Extensions:
@@ -17,6 +18,7 @@ interface iDBInterfaceExtensions {
 	emailVerificationRequestLogs: EmailVerificationRequestLogsRepository;
 	annotations: AnnotationsRepository;
 	news: NewsRepository;
+	newsAnnotationMap: NewsAnnotationRepository;
 }
 
 type DBTaskType = pgPromise.ITask<iDBInterfaceExtensions> &
@@ -32,6 +34,7 @@ export {
 	EmailVerificationRequestLogsRepository,
 	AnnotationsRepository,
 	NewsRepository,
+	NewsAnnotationRepository,
 };
 
 export type {DBTaskType, NullableDBTaskType};

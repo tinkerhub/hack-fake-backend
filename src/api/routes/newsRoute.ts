@@ -6,7 +6,12 @@ import logger from "@loaders/logger";
 
 import expressUtil from "@util/expressUtil";
 
-import {iRequest, iResponse, RouteType} from "@customTypes/expressTypes";
+import {
+	iRequest,
+	iRequestParams,
+	iResponse,
+	RouteType,
+} from "@customTypes/expressTypes";
 import {iNewsSubmissionDTO} from "customTypes/appDataTypes/newsTypes";
 import {celebrate, Segments} from "celebrate";
 import {newsSubmissionBodySchema} from "validations/newsRouteSchemas";
@@ -64,6 +69,54 @@ const newsRoute: RouteType = (apiRouter) => {
 				return res.status(httpStatusCode).json(result);
 			} catch (error) {
 				logger.error(uniqueRequestId, "Error on POST:/news :", error);
+
+				return next(error);
+			}
+		}
+	);
+
+	route.get(
+		"/:newsId/predict",
+		async (
+			req: iRequestParams<{
+				newsId: string;
+			}>,
+			res: iResponse<{annotationIds: string[]}>,
+			next: NextFunction
+		) => {
+			const uniqueRequestId = expressUtil.parseUniqueRequestId(req);
+
+			logger.debug(
+				uniqueRequestId,
+				"Calling GET:/news/:newsId/predict endpoint with params:",
+				null,
+				{
+					requestParams: req.params,
+				}
+			);
+
+			try {
+				const {newsId} = req.params;
+
+				const result = await newsService.predictAnnotation(
+					uniqueRequestId,
+					newsId
+				);
+
+				logger.debug(
+					uniqueRequestId,
+					"GET:/news/:newsId/predict :: Completed newsService.predictAnnotation & sending result to client:",
+					null,
+					result
+				);
+
+				return res.status(200).json(result);
+			} catch (error) {
+				logger.error(
+					uniqueRequestId,
+					"Error on GET:/news/:newsId/predict :",
+					error
+				);
 
 				return next(error);
 			}
