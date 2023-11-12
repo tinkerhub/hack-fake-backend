@@ -17,7 +17,10 @@ import {
 	iNewsSubmissionDTO,
 } from "customTypes/appDataTypes/newsTypes";
 import {celebrate, Segments} from "celebrate";
-import {newsSubmissionBodySchema} from "validations/newsRouteSchemas";
+import {
+	newsAnnotationBodySchema,
+	newsSubmissionBodySchema,
+} from "validations/newsRouteSchemas";
 import NewsService from "services/NewsService";
 
 const route = Router();
@@ -80,6 +83,9 @@ const newsRoute: RouteType = (apiRouter) => {
 
 	route.post(
 		"/annotate",
+		celebrate({
+			[Segments.BODY]: newsAnnotationBodySchema,
+		}),
 		async (
 			req: iRequest<iNewsAnnotationsInputDTO>,
 			res: iResponse<null>,
