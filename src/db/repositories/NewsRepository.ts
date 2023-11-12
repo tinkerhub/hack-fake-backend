@@ -1,14 +1,13 @@
 import {IDatabase, IMain} from "pg-promise";
 
-import {iNewsAnnotationMapModel} from "db/models/newsAnnotationMap.model";
+import {iNewsModel} from "db/models/news.model";
 
-import {newsAnnotationMap as sql} from "@db/sql";
-import {NullableString} from "customTypes/commonTypes";
+import {news as sql} from "@db/sql";
 
 /*
  This repository mixes hard-coded and dynamic SQL, just to show how to use both.
 */
-export default class NewsAnnotationRepository {
+export default class NewsRepository {
 	/**
 	 * @param db
 	 * Automated database connection context/interface.
@@ -30,7 +29,7 @@ export default class NewsAnnotationRepository {
 	}
 
 	/**
-	 * Creates the news_annotation_map table.
+	 * Creates the annotations table.
 	 *
 	 * @returns null
 	 */
@@ -38,33 +37,30 @@ export default class NewsAnnotationRepository {
 		return this.db.none(sql.create);
 	}
 
-	// Returns all news_annotation_map records;
-	async all(): Promise<iNewsAnnotationMapModel[]> {
-		return this.db.any("SELECT * FROM news_annotation_map");
+	// Returns all annotations records;
+	async all(): Promise<iNewsModel[]> {
+		return this.db.any("SELECT * FROM news");
 	}
 
-	// Finds a news_annotation_map record by its ID;
-	async findById(id: string): Promise<iNewsAnnotationMapModel | null> {
-		return this.db.oneOrNone(
-			"SELECT * FROM news_annotation_map WHERE id = $1",
-			id
-		);
+	// Finds a news record by its ID;
+	async findById(id: string): Promise<iNewsModel | null> {
+		return this.db.oneOrNone("SELECT * FROM news WHERE id = $1", id);
 	}
 
-	// Adds a new news_annotation_map record, and returns the new object;
+	// Adds a new news record, and returns the new object;
 	async add(
 		id: string,
-		newsId: string,
-		annotationId: string,
-		annotatedBy: string,
-		userId: NullableString
-	): Promise<iNewsAnnotationMapModel> {
+		publishedDate: string,
+		url: string,
+		title: string,
+		content: string
+	): Promise<iNewsModel> {
 		return this.db.one(sql.add, {
 			id,
-			newsId,
-			annotationId,
-			annotatedBy,
-			userId,
+			publishedDate,
+			url,
+			title,
+			content,
 		});
 	}
 }

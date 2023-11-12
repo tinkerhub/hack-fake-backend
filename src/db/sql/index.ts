@@ -81,3 +81,13 @@ export const emailVerificationRequestLogs = {
 export const annotations = {
 	create: sql("annotations/create.sql"),
 };
+
+export const news = {
+	create: sql("news/create.sql"),
+	add: sql("news/add.sql"),
+};
+
+export const newsAnnotationMap = {
+	create: sql("newsAnnotationMap/create.sql"),
+	add: sql("newsAnnotationMap/add.sql"),
+};
