@@ -15,6 +15,7 @@ import {
 	ResetPasswordRepository,
 	EmailVerificationRequestLogsRepository,
 	AnnotationsRepository,
+	NewsRepository,
 } from "@db/repositories/index";
 
 import {Diagnostics} from "@db/diagnostics"; // optional diagnostics
@@ -57,6 +58,7 @@ const initOptions: IInitOptions<iDBInterfaceExtensions> = {
 		obj.emailVerificationRequestLogs =
 			new EmailVerificationRequestLogsRepository(obj, pgp);
 		obj.annotations = new AnnotationsRepository(obj, pgp);
+		obj.news = new NewsRepository(obj, pgp);
 	},
 };
 
