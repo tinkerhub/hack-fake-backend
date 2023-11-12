@@ -67,4 +67,17 @@ export default class NewsAnnotationRepository {
 			userId,
 		});
 	}
+
+	// Add multiple news_annotation_map records, and returns the new objects;
+	async addMultiple(
+		newsAnnotationMapRecords: iNewsAnnotationMapModel[]
+	): Promise<iNewsAnnotationMapModel[]> {
+		return this.db.tx("add-multiple-news-annotation-map", async (t) => {
+			const queries = newsAnnotationMapRecords.map((record) => {
+				return t.none(sql.add, record);
+			});
+
+			return t.batch(queries);
+		});
+	}
 }

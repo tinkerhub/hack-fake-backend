@@ -12,9 +12,15 @@ import {
 	iResponse,
 	RouteType,
 } from "@customTypes/expressTypes";
-import {iNewsSubmissionDTO} from "customTypes/appDataTypes/newsTypes";
+import {
+	iNewsAnnotationsInputDTO,
+	iNewsSubmissionDTO,
+} from "customTypes/appDataTypes/newsTypes";
 import {celebrate, Segments} from "celebrate";
-import {newsSubmissionBodySchema} from "validations/newsRouteSchemas";
+import {
+	newsAnnotationBodySchema,
+	newsSubmissionBodySchema,
+} from "validations/newsRouteSchemas";
 import NewsService from "services/NewsService";
 
 const route = Router();
@@ -69,6 +75,53 @@ const newsRoute: RouteType = (apiRouter) => {
 				return res.status(httpStatusCode).json(result);
 			} catch (error) {
 				logger.error(uniqueRequestId, "Error on POST:/news :", error);
+
+				return next(error);
+			}
+		}
+	);
+
+	route.post(
+		"/annotate",
+		celebrate({
+			[Segments.BODY]: newsAnnotationBodySchema,
+		}),
+		async (
+			req: iRequest<iNewsAnnotationsInputDTO>,
+			res: iResponse<null>,
+			next: NextFunction
+		) => {
+			const uniqueRequestId = expressUtil.parseUniqueRequestId(req);
+
+			logger.debug(
+				uniqueRequestId,
+				"Calling POST:news/annotate endpoint with body:",
+				null,
+				{
+					requestBody: req.body,
+				}
+			);
+
+			try {
+				const {body} = req;
+
+				const result = await newsService.annotateNews(uniqueRequestId, body);
+
+				logger.debug(
+					uniqueRequestId,
+					"POST:news/annotate:: Completed newsService.annotateNews & sending result to client:",
+					null,
+					{
+						result,
+					}
+				);
+
+				const {httpStatusCode} = result;
+
+				return res.status(httpStatusCode).json(result);
+			} catch (error) {
+				console.log("🚀 ~ file: newsRoute.ts:61 ~ error:", error);
+				logger.error(uniqueRequestId, "Error on POST:news/annotate:", error);
 
 				return next(error);
 			}

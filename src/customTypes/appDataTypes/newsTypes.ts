@@ -1,4 +1,9 @@
-import {StringArray} from "customTypes/commonTypes";
+import {StringArray} from "@customTypes/commonTypes";
+
+export interface iNewsAnnotationsInputDTO {
+	newsId: string;
+	annotations: Array<string>;
+}
 
 export interface iNewsSubmissionDTO {
 	title: string;

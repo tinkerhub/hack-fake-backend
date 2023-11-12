@@ -11,4 +11,9 @@ const newsSubmissionBodySchema = Joi.object({
 	date: Joi.string().isoDate().required(),
 });
 
-export {newsIdSchema, newsSubmissionBodySchema};
+const newsAnnotationBodySchema = Joi.object({
+	newsId: Joi.string().uuid().required(),
+	annotations: Joi.array().items(Joi.string().uuid()).required().min(1),
+});
+
+export {newsIdSchema, newsSubmissionBodySchema, newsAnnotationBodySchema};

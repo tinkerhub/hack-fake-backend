@@ -8,7 +8,10 @@ import {iGenericServiceResult} from "@customTypes/commonServiceTypes";
 import {httpStatusCodes} from "@customTypes/networkTypes";
 
 import {NullableString, StringArray} from "@customTypes/commonTypes";
-import {iNewsSubmissionDTO} from "@customTypes/appDataTypes/newsTypes";
+import {
+	iNewsAnnotationsInputDTO,
+	iNewsSubmissionDTO,
+} from "@customTypes/appDataTypes/newsTypes";
 import securityUtil from "@util/securityUtil";
 import {newsServiceError} from "@constants/errors/newsServiceErrors";
 import {DBTaskType} from "@db/repositories";
@@ -43,23 +46,84 @@ export default class NewsService {
 		});
 	}
 
-	public async predictAnnotation(
+	public async annotateNews(
 		uniqueRequestId: NullableString,
-		newsId: string
-	): Promise<iGenericServiceResult<{annotationIds: StringArray} | null>> {
-		return db.task("predict-annotation", async (task) => {
-			const newsRecord = await task.news.findById(newsId);
-			console.log(
-				"🚀 ~ file: NewsService.ts:52 ~ NewsService ~ returndb.task ~ newsRecord:",
-				newsRecord
-			);
+		annotationInputDTO: iNewsAnnotationsInputDTO
+	): Promise<iGenericServiceResult<null>> {
+		return db.tx("annotate-news", async (transaction) => {
+			const {newsId, annotations} = annotationInputDTO;
+
+			logger.silly("Checking if news exists");
+			const newsRecord = await transaction.news.findById(newsId);
 
 			if (!newsRecord) {
 				return serviceUtil.buildResult(
 					false,
 					httpStatusCodes.CLIENT_ERROR_BAD_REQUEST,
 					uniqueRequestId,
-					newsServiceError.predictAnnotations.NewsDoesNotExists
+					newsServiceError.generic.NewsDoesNotExists
+				);
+			}
+
+			// check if the annotations exists
+			logger.silly("Checking if annotations exists");
+			const annotationRecords = await transaction.annotations.findByIds(
+				annotations
+			);
+
+			if (annotationRecords.length !== annotations.length) {
+				return serviceUtil.buildResult(
+					false,
+					httpStatusCodes.CLIENT_ERROR_BAD_REQUEST,
+					uniqueRequestId,
+					newsServiceError.annotateNews.InvalidAnnotation
+				);
+			}
+
+			logger.silly("Inserting all annotations to annotation map table");
+			const newsAnnotationMapRecords = annotations.map((annotationId) => {
+				return {
+					id: securityUtil.generateUUID(),
+					newsId,
+					annotationId,
+					annotatedBy: "USER",
+					userId: null, // FIXME: Add userId from request
+				};
+			});
+
+			await transaction.batch(
+				newsAnnotationMapRecords.map((record) => {
+					return transaction.newsAnnotationMap.add(
+						record.id,
+						record.newsId,
+						record.annotationId,
+						record.annotatedBy,
+						record.userId
+					);
+				})
+			);
+
+			return serviceUtil.buildResult(
+				true,
+				httpStatusCodes.SUCCESS_CREATED,
+				uniqueRequestId,
+				null
+			);
+		});
+	}
+
+	public async predictAnnotation(
+		uniqueRequestId: NullableString,
+		newsId: string
+	): Promise<iGenericServiceResult<{annotationIds: StringArray} | null>> {
+		return db.task("predict-annotation", async (task) => {
+			const newsRecord = await task.news.findById(newsId);
+			if (!newsRecord) {
+				return serviceUtil.buildResult(
+					false,
+					httpStatusCodes.CLIENT_ERROR_BAD_REQUEST,
+					uniqueRequestId,
+					newsServiceError.generic.NewsDoesNotExists
 				);
 			}
 

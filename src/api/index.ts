@@ -3,8 +3,8 @@ import {Router} from "express";
 import authRoute from "@api/routes/authRoute";
 import userRoute from "@api/routes/usersRoute";
 import verificationRoute from "@api/routes/verificationRoute";
-import annotationsRoute from "@api/routes/annotationsRoute";
 import newsRoute from "@api/routes/newsRoute";
+import annotationsRoute from "./routes/annotationsRoute";
 
 const getRouter = (): Router => {
 	const apiRouter = Router();

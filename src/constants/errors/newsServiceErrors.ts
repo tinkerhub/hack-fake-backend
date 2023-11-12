@@ -1,11 +1,19 @@
 import {asTypeIServiceError} from "@customTypes/commonServiceTypes";
 
 const newsServiceError = asTypeIServiceError({
-	predictAnnotations: {
+	generic: {
 		NewsDoesNotExists: {
 			error: "NewsDoesNotExists",
 
 			message: "News doesn't exists",
+		},
+	},
+
+	annotateNews: {
+		InvalidAnnotation: {
+			error: "InvalidAnnotation",
+
+			message: "Invalid annotation options",
 		},
 	},
 });
