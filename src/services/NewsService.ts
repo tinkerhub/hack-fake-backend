@@ -15,7 +15,9 @@ import {
 import securityUtil from "@util/securityUtil";
 import {newsServiceError} from "@constants/errors/newsServiceErrors";
 import {DBTaskType} from "@db/repositories";
+import MLService from "./MLService";
 
+const mlService = new MLService();
 export default class NewsService {
 	public async addNews(
 		uniqueRequestId: NullableString,
@@ -117,8 +119,8 @@ export default class NewsService {
 		uniqueRequestId: NullableString,
 		newsId: string
 	): Promise<iGenericServiceResult<{annotationIds: StringArray} | null>> {
-		return db.task("predict-annotation", async (task) => {
-			const newsRecord = await task.news.findById(newsId);
+		return db.tx("predict-annotation", async (transaction) => {
+			const newsRecord = await transaction.news.findById(newsId);
 			if (!newsRecord) {
 				return serviceUtil.buildResult(
 					false,
@@ -130,18 +132,40 @@ export default class NewsService {
 
 			// TODO: Call ML model to predict annotations
 			// Now calling a dummy function which queries the database to get all annotations and return a few of them randomly
-			const annotationIds: StringArray = await this.getRandomAnnotationIds(
-				task
-			);
+			const mlPredictionResponse = await mlService.predict({
+				title: newsRecord.title,
+				content: newsRecord.content,
+			});
+
+			const annotationIds: StringArray =
+				mlPredictionResponse.predictedAnnotations;
 
 			// Insert predicted annotations to news_annotation_map table if annotationIds is not empty
 			if (annotationIds.length > 0) {
-				await task.newsAnnotationMap.add(
-					securityUtil.generateUUID(),
-					newsId,
-					annotationIds[0],
-					"AI",
-					null
+				logger.silly(
+					"Inserting all predicted annotations to annotation map table"
+				);
+
+				const newsAnnotationMapRecords = annotationIds.map((annotationId) => {
+					return {
+						id: securityUtil.generateUUID(),
+						newsId,
+						annotationId,
+						annotatedBy: "AI",
+						userId: null,
+					};
+				});
+
+				await transaction.batch(
+					newsAnnotationMapRecords.map((record) => {
+						return transaction.newsAnnotationMap.add(
+							record.id,
+							record.newsId,
+							record.annotationId,
+							record.annotatedBy,
+							record.userId
+						);
+					})
 				);
 			}
 

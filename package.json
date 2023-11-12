@@ -75,6 +75,7 @@
 	},
 	"dependencies": {
 		"argon2": "^0.30.3",
+		"axios": "^1.6.1",
 		"celebrate": "^15.0.1",
 		"cors": "^2.8.5",
 		"dotenv": "^16.0.3",

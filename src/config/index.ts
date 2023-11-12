@@ -118,4 +118,8 @@ export default {
 			process.env.EMAIL_VERIFICATION_RETRY_INTERVAL_IN_MINUTES
 		),
 	},
+
+	aiModelConfig: {
+		newsPredictionThreshold: Number(process.env.AI_NEWS_PREDICTION_THRESHOLD),
+	},
 };
