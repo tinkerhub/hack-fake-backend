@@ -103,7 +103,9 @@ const newsRoute: RouteType = (apiRouter) => {
 			);
 
 			try {
-				const result = await newsService.annotateNews(uniqueRequestId);
+				const {body} = req;
+
+				const result = await newsService.annotateNews(uniqueRequestId, body);
 
 				logger.debug(
 					uniqueRequestId,

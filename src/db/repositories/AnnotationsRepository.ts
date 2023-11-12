@@ -41,4 +41,14 @@ export default class AnnotationsRepository {
 	async all(): Promise<iAnnotationModel[]> {
 		return this.db.any("SELECT * FROM annotations");
 	}
+
+	// Returns a single annotation by id;
+	async findById(id: string): Promise<iAnnotationModel | null> {
+		return this.db.oneOrNone("SELECT * FROM annotations WHERE id = $1", id);
+	}
+
+	// Returns multiple annotations by ids;
+	async findByIds(ids: string[]): Promise<iAnnotationModel[]> {
+		return this.db.any("SELECT * FROM annotations WHERE id IN ($1:csv)", [ids]);
+	}
 }
