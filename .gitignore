@@ -161,3 +161,7 @@ dist
 
 #MacOS
 .DS_Store
+
+#Deployment
+deploy-local-to-staging.sh
+.env.staging
