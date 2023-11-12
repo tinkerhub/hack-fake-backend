@@ -104,9 +104,14 @@ const newsRoute: RouteType = (apiRouter) => {
 			);
 
 			try {
-				const {body} = req;
+				const {body, decodedAccessToken} = req;
+				const {uid: userId} = decodedAccessToken;
 
-				const result = await newsService.annotateNews(uniqueRequestId, body);
+				const result = await newsService.annotateNews(
+					uniqueRequestId,
+					userId,
+					body
+				);
 
 				logger.debug(
 					uniqueRequestId,
