@@ -9,7 +9,7 @@ import expressUtil from "@util/expressUtil";
 import {iRequest, iResponse, RouteType} from "@customTypes/expressTypes";
 import {MultiAnnotation} from "@customTypes/appDataTypes/annotationTypes";
 import AnnotationService from "@services/AnnotationService";
-import middlewares from "@api/middlewares";
+// import middlewares from "@api/middlewares";
 
 const route = Router();
 const annotationService = new AnnotationService();
@@ -21,7 +21,7 @@ const annotationsRoute: RouteType = (apiRouter) => {
 		Registering isAuthorized middleware to the entire /users route
 		as all the endpoint in this route needs authorization.
 	*/
-	route.use(middlewares.isAuthorized);
+	// route.use(middlewares.isAuthorized);
 
 	route.get(
 		"/",
