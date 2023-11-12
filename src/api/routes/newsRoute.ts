@@ -15,13 +15,14 @@ import {
 import {
 	iNewsAnnotationsInputDTO,
 	iNewsSubmissionDTO,
-} from "customTypes/appDataTypes/newsTypes";
+} from "@customTypes/appDataTypes/newsTypes";
 import {celebrate, Segments} from "celebrate";
 import {
 	newsAnnotationBodySchema,
 	newsSubmissionBodySchema,
-} from "validations/newsRouteSchemas";
-import NewsService from "services/NewsService";
+} from "@validations/newsRouteSchemas";
+import NewsService from "@services/NewsService";
+import middlewares from "@api/middlewares";
 
 const route = Router();
 const newsService = new NewsService();
@@ -33,7 +34,7 @@ const newsRoute: RouteType = (apiRouter) => {
 		Registering isAuthorized middleware to the entire /users route
 		as all the endpoint in this route needs authorization.
 	*/
-	// route.use(middlewares.isAuthorized);
+	route.use(middlewares.isAuthorized);
 
 	route.post(
 		"/",
@@ -103,9 +104,14 @@ const newsRoute: RouteType = (apiRouter) => {
 			);
 
 			try {
-				const {body} = req;
+				const {body, decodedAccessToken} = req;
+				const {uid: userId} = decodedAccessToken;
 
-				const result = await newsService.annotateNews(uniqueRequestId, body);
+				const result = await newsService.annotateNews(
+					uniqueRequestId,
+					userId,
+					body
+				);
 
 				logger.debug(
 					uniqueRequestId,

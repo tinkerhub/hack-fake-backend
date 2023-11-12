@@ -48,6 +48,7 @@ export default class NewsService {
 
 	public async annotateNews(
 		uniqueRequestId: NullableString,
+		userId: string,
 		annotationInputDTO: iNewsAnnotationsInputDTO
 	): Promise<iGenericServiceResult<null>> {
 		return db.tx("annotate-news", async (transaction) => {
@@ -87,7 +88,7 @@ export default class NewsService {
 					newsId,
 					annotationId,
 					annotatedBy: "USER",
-					userId: null, // FIXME: Add userId from request
+					userId,
 				};
 			});
 
