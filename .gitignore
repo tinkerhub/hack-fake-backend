@@ -164,3 +164,4 @@ dist
 
 #Deployment
 deploy-local-to-staging.sh
+.env.staging
