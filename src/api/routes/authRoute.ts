@@ -3,6 +3,8 @@ import {celebrate, Segments} from "celebrate";
 
 import logger from "@loaders/logger";
 
+import {disableRoute} from "@api/middlewares/disableRouteMiddleware";
+
 import AuthService from "@services/AuthService";
 
 import expressUtil from "@util/expressUtil";
@@ -32,6 +34,8 @@ const authRoute: RouteType = (apiRouter) => {
 
 	route.post(
 		"/signup",
+		// NOTE: This Route is disabled for now.
+		disableRoute,
 		celebrate({
 			[Segments.BODY]: signupBodySchema,
 		}),
@@ -187,6 +191,8 @@ const authRoute: RouteType = (apiRouter) => {
 
 	route.post(
 		"/request-reset-password",
+		// NOTE: This Route is disabled for now.
+		disableRoute,
 		celebrate({
 			[Segments.BODY]: resetPasswordRequestSchema,
 		}),
@@ -242,6 +248,8 @@ const authRoute: RouteType = (apiRouter) => {
 
 	route.post(
 		"/reset-password",
+		// NOTE: This Route is disabled for now.
+		disableRoute,
 		celebrate({
 			[Segments.BODY]: resetPasswordBodySchema,
 		}),

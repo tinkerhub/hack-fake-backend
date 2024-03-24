@@ -9,6 +9,11 @@ const genericServiceErrors = asTypeIServiceError({
 	},
 
 	errors: {
+		RouteDisabled: {
+			error: "RouteDisabled",
+			message: "This route is temporarily disabled.",
+		},
+
 		ResourceNotFound: {
 			error: "ResourceNotFound",
 
