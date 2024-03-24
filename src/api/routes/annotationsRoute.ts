@@ -2,14 +2,12 @@ import {NextFunction, Router} from "express";
 
 import logger from "@loaders/logger";
 
-// import middlewares from "@api/middlewares";
-
 import expressUtil from "@util/expressUtil";
 
 import {iRequest, iResponse, RouteType} from "@customTypes/expressTypes";
 import {MultiAnnotation} from "@customTypes/appDataTypes/annotationTypes";
 import AnnotationService from "@services/AnnotationService";
-// import middlewares from "@api/middlewares";
+import middlewares from "@api/middlewares";
 
 const route = Router();
 const annotationService = new AnnotationService();
@@ -21,7 +19,7 @@ const annotationsRoute: RouteType = (apiRouter) => {
 		Registering isAuthorized middleware to the entire /users route
 		as all the endpoint in this route needs authorization.
 	*/
-	// route.use(middlewares.isAuthorized);
+	route.use(middlewares.isAuthorized);
 
 	route.get(
 		"/",
@@ -59,7 +57,6 @@ const annotationsRoute: RouteType = (apiRouter) => {
 
 				return res.status(httpStatusCode).json(result);
 			} catch (error) {
-				console.log("🚀 ~ file: annotationsRoute.ts:61 ~ error:", error);
 				logger.error(uniqueRequestId, "Error on GET:/annotations:", error);
 
 				return next(error);
