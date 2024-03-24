@@ -2,8 +2,6 @@ import {NextFunction, Router} from "express";
 
 import logger from "@loaders/logger";
 
-// import middlewares from "@api/middlewares";
-
 import expressUtil from "@util/expressUtil";
 
 import {
@@ -22,7 +20,7 @@ import {
 	newsSubmissionBodySchema,
 } from "@validations/newsRouteSchemas";
 import NewsService from "@services/NewsService";
-// import middlewares from "@api/middlewares";
+import middlewares from "@api/middlewares";
 
 const route = Router();
 const newsService = new NewsService();
@@ -34,7 +32,7 @@ const newsRoute: RouteType = (apiRouter) => {
 		Registering isAuthorized middleware to the entire /users route
 		as all the endpoint in this route needs authorization.
 	*/
-	// route.use(middlewares.isAuthorized);
+	route.use(middlewares.isAuthorized);
 
 	route.post(
 		"/",
