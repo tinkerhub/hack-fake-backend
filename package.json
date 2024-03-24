@@ -1,6 +1,6 @@
 {
 	"name": "hack-fake-server",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "HackFake Server",
 	"main": "./src/App.ts",
 	"repository": "git@github.com:tinkerhub/hack-fake-server.git",
