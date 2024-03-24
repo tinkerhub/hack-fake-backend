@@ -30,6 +30,7 @@
 		"postcommit",
 		"signin",
 		"strapi",
+		"tinkerhub",
 		"URID",
 		"uuidv"
 	]
