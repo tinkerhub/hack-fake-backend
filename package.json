@@ -1,9 +1,9 @@
 {
-	"name": "pluteo-js",
+	"name": "hack-fake-server",
 	"version": "0.0.1",
-	"description": "PluteoJS Server",
+	"description": "HackFake Server",
 	"main": "./src/App.ts",
-	"repository": "git@gitlab.com:PluteoJS/pluteojs-template.git",
+	"repository": "git@github.com:tinkerhub/hack-fake-server.git",
 	"author": "Muhammad Swalah A A <swalah@heedlabs.com>",
 	"private": true,
 	"packageManager": "yarn@3.5.0",
