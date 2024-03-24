@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import {StringArray} from "@customTypes/commonTypes";
-import annotationUtil from "util/annotationUtil";
+import annotationUtil from "@util/annotationUtil";
 
 const apiBaseUrl = "http://98.70.59.151:8000";
 
